@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.Context;
 using PeliculasAPI.DTOs;
 using PeliculasAPI.Entities;
+using PeliculasAPI.Utilidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +29,12 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<GeneroDTO>>> Get()
+        public async Task<ActionResult<List<GeneroDTO>>> Get([FromQuery] PaginacionDTO paginacion)
         {
-            var generos = await _dbContext.Generos.ToListAsync();
+            var queryable =  _dbContext.Generos.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEnCabecera(queryable);
+
+            var generos = await queryable.OrderBy(x => x.Nombre).Paginar(paginacion).ToListAsync();
 
             return _mapper.Map<List<GeneroDTO>>(generos);
         }
