@@ -8,18 +8,18 @@ namespace PeliculasAPI.repositorios
 {
     public class RepositorioEnMemoria
     {
-        private List<Genre> _genres;
+        private List<Genero> _genres;
 
         public RepositorioEnMemoria()
         {
-            _genres = new List<Genre>()
+            _genres = new List<Genero>()
             {
-                new Genre() { Id = 1, Nombre = "Comedia" },
-                new Genre() { Id = 2, Nombre = "Acción" }
+                new Genero() { Id = 1, Nombre = "Comedia" },
+                new Genero() { Id = 2, Nombre = "Acción" }
             };
         }
 
-        public List<Genre> ObtenerTodosLosGeneros()
+        public List<Genero> ObtenerTodosLosGeneros()
         {
             return _genres;
         }
