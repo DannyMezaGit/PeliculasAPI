@@ -36,14 +36,20 @@ namespace PeliculasAPI.Controllers
 
             var generos = await queryable.OrderBy(x => x.Nombre).Paginar(paginacion).ToListAsync();
 
-            return _mapper.Map<List<GeneroDTO>>(generos);
+            return Ok(_mapper.Map<List<GeneroDTO>>(generos));
         }
 
    
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<GeneroDTO>> Get(int id)
         {
-            return "value";
+            var genero = await _dbContext.Generos.FirstOrDefaultAsync(x => x.Id == id);
+            if (genero == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(_mapper.Map<GeneroDTO>(genero));
         }
 
 
@@ -58,8 +64,20 @@ namespace PeliculasAPI.Controllers
 
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult>  Put(int id, [FromBody] GeneroCreacionDTO modelo)
         {
+            var genero = await _dbContext.Generos.FirstOrDefaultAsync(x => x.Id == id);
+            if (genero == null)
+            {
+                return NotFound();
+            }
+
+            genero = _mapper.Map(modelo, genero);
+
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
+            
         }
 
 
