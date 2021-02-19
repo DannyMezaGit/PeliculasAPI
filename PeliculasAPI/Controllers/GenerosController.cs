@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.Context;
+using PeliculasAPI.DTOs;
 using PeliculasAPI.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,41 +18,47 @@ namespace PeliculasAPI.Controllers
     public class GenerosController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public GenerosController (ApplicationDbContext dbContext)
+        public GenerosController (ApplicationDbContext dbContext,
+                                  IMapper mapper)
         {
             _dbContext = dbContext;
-        }
-        // GET: api/<ValuesController>
-        [HttpGet]
-        public async Task<ActionResult<List<Genero>>> Get()
-        {
-            return await _dbContext.Generos.ToListAsync();
+            _mapper = mapper;
         }
 
-        // GET api/<ValuesController>/5
+        [HttpGet]
+        public async Task<ActionResult<List<GeneroDTO>>> Get()
+        {
+            var generos = await _dbContext.Generos.ToListAsync();
+
+            return _mapper.Map<List<GeneroDTO>>(generos);
+        }
+
+   
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/<ValuesController>
+
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Genero genero)
+        public async Task<ActionResult> Post([FromBody] GeneroCreacionDTO modelo)
         {
+            var genero = _mapper.Map<Genero>(modelo);
             _dbContext.Add(genero);
             await _dbContext.SaveChangesAsync();
             return NoContent(); // para retornar un 204
         }
 
-        // PUT api/<ValuesController>/5
+
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<ValuesController>/5
+
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
