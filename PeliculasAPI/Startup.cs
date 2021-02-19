@@ -39,7 +39,8 @@ namespace PeliculasAPI
 
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins(frontend_url).AllowAnyMethod().AllowAnyHeader();
+                    builder.WithOrigins(frontend_url).AllowAnyMethod().AllowAnyHeader()
+                    .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
                 });
             });
 
