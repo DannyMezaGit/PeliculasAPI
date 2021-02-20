@@ -82,8 +82,19 @@ namespace PeliculasAPI.Controllers
 
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            var existe = await _dbContext.Generos.AnyAsync(x => x.Id == id);
+
+            if (!existe)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Remove(new Genero() { Id = id });
+            await _dbContext.SaveChangesAsync();
+            
+            return NoContent();
         }
     }
 }
